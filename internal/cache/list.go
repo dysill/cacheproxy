@@ -1,13 +1,8 @@
 package cache
 
-import (
-	"time"
-)
-
 type node struct {
 	key        string
-	value      []byte
-	expiresAt  time.Time
+	entry      entry
 	prev, next *node
 }
 
