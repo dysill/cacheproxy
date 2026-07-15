@@ -22,6 +22,7 @@ func main() {
 	h := proxy.NewProxyHandler(c, *upstreamURL, defaultTTL)
 	mux := http.NewServeMux()
 	mux.Handle("/", h)
+	mux.HandleFunc("/stats", h.StatsHandler)
 
 	addr := fmt.Sprintf(":%d", *port)
 	log.Printf("proxy server listening on %s", addr)

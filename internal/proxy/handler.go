@@ -13,6 +13,7 @@ type ProxyHandler struct {
 	upstreamURL string
 	client      *http.Client
 	defaultTTL  time.Duration
+	stats       stats
 }
 
 func NewProxyHandler(cache cache.Cache, upstreamURL string, ttl time.Duration) *ProxyHandler {
@@ -28,10 +29,12 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Path
 	value, found := h.cache.Get(key)
 	if found { // cache hit
+		h.stats.hits.Add(1)
 		w.Header().Set("Content-Type", "application/json") // Only handle JSON for now, could generalize later
 		w.Write(value)
 		return
 	}
+	h.stats.misses.Add(1)
 
 	resp, err := h.client.Get(h.upstreamURL + key)
 	if err != nil {
