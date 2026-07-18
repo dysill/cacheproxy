@@ -6,7 +6,7 @@ import (
 )
 
 type FIFOCache struct {
-	mu       sync.RWMutex
+	mu       sync.Mutex
 	items    map[string]*node
 	capacity int
 	list     *dll
